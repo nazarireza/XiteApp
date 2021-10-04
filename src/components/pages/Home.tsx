@@ -1,33 +1,53 @@
-import React, {memo} from 'react';
-import {StyleSheet, View, Text, Button} from 'react-native';
-import {RootStackComponent, Routes} from '../../types/navigation';
-import {useGetVideosQuery} from '../../services/video';
+import React, {memo, useCallback, useState} from 'react';
+import {StyleSheet, View, Text, StatusBar} from 'react-native';
+import {Genre, onListItemSelect, RootStackComponent, Routes} from '../../types';
+import {useGetVideosQuery} from '../../services';
+import {colors, dictionary, typography} from '../../assets';
+import {GenresList, SearchBox, VideosList} from '../molecules';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {Space} from '../atoms';
 
-const HomePage: RootStackComponent<Routes.Home> = memo(({navigation}) => {
-  const {data, error, isLoading} = useGetVideosQuery({});
+export const HomePage: RootStackComponent<Routes.Home> = memo(
+  ({navigation}) => {
+    const [keyword, setKeyword] = useState('');
+    const [selectedGenres, setSelectedGenres] = useState<Array<Genre>>([]);
+    const {data, error, isLoading} = useGetVideosQuery({});
 
-  return (
-    <View style={styles.container}>
-      <Text>Home Page</Text>
-      {data?.genres.map(({id, name}) => (
-        <Text key={id}>{name}</Text>
-      ))}
-      <Button
-        title="Go to Search page"
-        onPress={() =>
-          navigation.navigate(Routes.Search, {keyword: 'Test Query'})
-        }
-      />
-    </View>
-  );
-});
+    const onItemSelect: onListItemSelect<Genre> = useCallback(
+      ({item, selected}) => {
+        if (selected) setSelectedGenres(prev => [...prev, item]);
+        else setSelectedGenres(prev => [...prev.filter(p => p.id !== item.id)]);
+      },
+      [],
+    );
 
-export default HomePage;
+    return (
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="light-content" />
+        <View style={styles.headerContainer}>
+          <Text style={typography.appHeader}>{dictionary.appName}</Text>
+          <Space />
+          <SearchBox value={keyword} onChange={value => setKeyword(value)} />
+        </View>
+        <GenresList
+          data={data?.genres}
+          selectedItems={selectedGenres}
+          onItemSelect={onItemSelect}
+        />
+        <Space size={8} />
+        <VideosList data={data?.videos} />
+      </SafeAreaView>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: colors.background.page,
+  },
+  headerContainer: {
+    paddingHorizontal: 24,
+    paddingVertical: 16,
   },
 });

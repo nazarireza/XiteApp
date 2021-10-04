@@ -1,5 +1,5 @@
 import {configureStore} from '@reduxjs/toolkit';
-import {videoApi} from '../services/video';
+import {videoApi} from '../services';
 
 export default configureStore({
   reducer: {

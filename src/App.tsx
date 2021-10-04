@@ -1,9 +1,8 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import HomePage from './components/pages/Home';
-import SearchPage from './components/pages/Search';
-import {RootStackParamList, Routes} from './types/navigation';
+import {HomePage, SearchPage} from './components/pages';
+import {RootStackParamList, Routes} from './types';
 import {Provider} from 'react-redux';
 import store from './store';
 

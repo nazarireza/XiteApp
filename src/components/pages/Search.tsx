@@ -1,8 +1,8 @@
 import React, {memo} from 'react';
 import {StyleSheet, View, Text, Button} from 'react-native';
-import {RootStackComponent, Routes} from '../../types/navigation';
+import {RootStackComponent, Routes} from '../../types';
 
-const SearchPage: RootStackComponent<Routes.Search> = memo(
+export const SearchPage: RootStackComponent<Routes.Search> = memo(
   ({navigation, route}) => {
     return (
       <View style={styles.container}>
@@ -12,8 +12,6 @@ const SearchPage: RootStackComponent<Routes.Search> = memo(
     );
   },
 );
-
-export default SearchPage;
 
 const styles = StyleSheet.create({
   container: {
