@@ -1,25 +1,36 @@
 import React, {memo, useState, useCallback, useMemo} from 'react';
 import {StyleSheet, View, Text, ScrollView} from 'react-native';
-import {colors, dictionary, typography} from '../../assets';
+import {colors, dictionary, typography} from '../../../assets';
 import {BlurView} from '@react-native-community/blur';
-import {GenresWrapList, Header, YearsWrapList} from '../molecules';
-import {Space, onListItemSelect} from '../atoms';
-import {Genre, Video} from '../../types';
+import {GenresWrapList, Header, YearsWrapList} from '../../molecules';
+import {Space, onListItemSelect} from '../../atoms';
+import {Genre, Video} from '../../../types';
 
 interface FilterOverlayProps {
   genres?: Array<Genre>;
   videos?: Array<Video>;
   defaultSelectedGenres?: Array<Genre>;
-  onConfirm?: (value: {genres: Array<Genre>; years: Array<number>}) => void;
+  defaultSelectedYears?: Array<number>;
+  onConfirm?: OnFilterConfirmed;
   onDismiss?: () => void;
 }
 
+export type OnFilterConfirmed = (value: {
+  genres: Array<Genre>;
+  years: Array<number>;
+}) => void;
+
 export const FilterOverlay: React.FC<FilterOverlayProps> = memo(
-  ({genres = [], videos = [], defaultSelectedGenres = [], onConfirm, onDismiss}) => {
-    const [selectedGenres, setSelectedGenres] = useState<Array<Genre>>(
-      defaultSelectedGenres,
-    );
-    const [selectedYears, setSelectedYears] = useState<Array<number>>([]);
+  ({
+    genres = [],
+    videos = [],
+    defaultSelectedGenres = [],
+    onConfirm,
+    onDismiss,
+    defaultSelectedYears = [],
+  }) => {
+    const [selectedGenres, setSelectedGenres] = useState(defaultSelectedGenres);
+    const [selectedYears, setSelectedYears] = useState(defaultSelectedYears);
 
     const onGenreSelect: onListItemSelect<Genre> = useCallback(
       ({item, selected}) => {
@@ -42,7 +53,7 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = memo(
     }, [videos]);
 
     return (
-      <BlurView style={styles.container} blurType="light" blurAmount={15}>
+      <BlurView style={styles.container} blurType="dark" blurAmount={10}>
         <Header
           title={dictionary.filterModalTitle}
           actionTitle={dictionary.filterModalConfirmActionTitle}

@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.button.lightBlue,
   },
   text: {
-    color: colors.text.black,
+    color: colors.text.primary,
   },
   selectedContainer: {
     backgroundColor: colors.primary,
