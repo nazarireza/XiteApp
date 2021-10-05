@@ -3,10 +3,10 @@ import {StyleSheet, View, Text, StatusBar} from 'react-native';
 import {Genre, RootStackComponent, Routes} from '../../types';
 import {useGetVideosQuery} from '../../services';
 import {colors, dictionary, typography} from '../../assets';
-import {GenresList, SearchBox, VideosList} from '../molecules';
+import {GenresList, Header, SearchBox, VideosList} from '../molecules';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Space, onListItemSelect} from '../atoms';
-import {FilterOverlay} from '.';
+import {FilterOverlay, SerachOverlay} from '.';
 
 export const HomePage: RootStackComponent<Routes.Home> = memo(
   ({navigation}) => {
@@ -28,9 +28,11 @@ export const HomePage: RootStackComponent<Routes.Home> = memo(
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="light-content" />
         <View style={styles.headerContainer}>
-          <Text style={typography.appHeader}>{dictionary.appName}</Text>
-          <Space />
+          {/* <Header title={dictionary.appName} dissmissable={false} /> */}
+          <Header title={dictionary.searchrModalTitle} />
+          <Space size={8} />
           <SearchBox value={keyword} onChange={value => setKeyword(value)} />
+          <Space />
         </View>
         <GenresList
           data={data?.genres}
@@ -39,11 +41,12 @@ export const HomePage: RootStackComponent<Routes.Home> = memo(
         />
         <Space size={8} />
         <VideosList data={data?.videos} />
-        <FilterOverlay
+        {/* <FilterOverlay
           genres={data?.genres}
           defaultSelectedGenres={selectedGenres}
           videos={data?.videos}
-        />
+        /> */}
+        <SerachOverlay keyword={keyword} />
       </SafeAreaView>
     );
   },

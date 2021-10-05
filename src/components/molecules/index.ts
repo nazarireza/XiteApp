@@ -4,3 +4,4 @@ export * from './VideosList';
 export * from './Header';
 export * from './GenresWrapList';
 export * from './YearsWrapList';
+export * from './VideoCompactList';

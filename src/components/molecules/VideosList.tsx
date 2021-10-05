@@ -4,7 +4,6 @@ import {
   FlatListProps,
   FlatList,
   ListRenderItem,
-  View,
   useWindowDimensions,
 } from 'react-native';
 import {Video} from '../../types';

@@ -8,6 +8,7 @@ interface HeaderProps {
   onBackPress?: () => void;
   actionTitle?: string;
   onActionPress?: () => void;
+  dissmissable?: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = memo(
@@ -16,16 +17,22 @@ export const Header: React.FC<HeaderProps> = memo(
     actionTitle,
     onActionPress,
     onBackPress,
+    dissmissable = true,
   }) => {
     const hasAction = !!actionTitle;
     return (
       <View style={styles.container}>
         <TouchableOpacity
+          disabled={!dissmissable}
           style={styles.titleContainer}
           activeOpacity={0.7}
           onPress={onBackPress}>
-          <IconBack color={colors.text.primary} />
-          <Space size={8} />
+          {dissmissable && (
+            <>
+              <IconBack color={colors.text.primary} />
+              <Space size={8} />
+            </>
+          )}
           <Text style={typography.header}>{title}</Text>
         </TouchableOpacity>
         {hasAction && (

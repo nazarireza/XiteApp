@@ -11,10 +11,11 @@ interface FilterOverlayProps {
   videos?: Array<Video>;
   defaultSelectedGenres?: Array<Genre>;
   onConfirm?: (value: {genres: Array<Genre>; years: Array<number>}) => void;
+  onDismiss?: () => void;
 }
 
 export const FilterOverlay: React.FC<FilterOverlayProps> = memo(
-  ({genres = [], videos = [], defaultSelectedGenres = [], onConfirm}) => {
+  ({genres = [], videos = [], defaultSelectedGenres = [], onConfirm, onDismiss}) => {
     const [selectedGenres, setSelectedGenres] = useState<Array<Genre>>(
       defaultSelectedGenres,
     );
@@ -45,6 +46,7 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = memo(
         <Header
           title={dictionary.filterModalTitle}
           actionTitle={dictionary.filterModalConfirmActionTitle}
+          onBackPress={onDismiss}
           onActionPress={() =>
             onConfirm?.({genres: selectedGenres, years: selectedYears})
           }
