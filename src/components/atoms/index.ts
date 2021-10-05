@@ -9,3 +9,4 @@ export * from './VideoItem';
 export * from './WrapList';
 export * from './ToggleButton';
 export * from './VideoCompactItem';
+export * from './LoadingContainer';

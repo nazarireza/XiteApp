@@ -39,5 +39,8 @@ export const VideosCompactList: React.FC<
 });
 
 const styles = StyleSheet.create({
-  scrollContainer: {},
+  scrollContainer: {
+    paddingVertical:16,
+    paddingHorizontal:24
+  },
 });

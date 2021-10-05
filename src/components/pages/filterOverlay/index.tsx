@@ -1,12 +1,12 @@
 import React, {memo, useState, useCallback, useMemo} from 'react';
-import {StyleSheet, Text, ScrollView} from 'react-native';
-import {dictionary, typography} from '../../../assets';
-import {BlurView} from '@react-native-community/blur';
+import {StyleSheet, Text, ScrollView, View} from 'react-native';
+import {colors, dictionary, typography} from '../../../assets';
 import {GenresWrapList, Header, YearsWrapList} from '../../molecules';
 import {Space, onListItemSelect} from '../../atoms';
 import {Genre, Video} from '../../../types';
 import Animated from 'react-native-reanimated';
 import {useAppearAnimation} from '../useAppearAnimation';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 interface FilterOverlayProps {
   genres?: Array<Genre>;
@@ -16,6 +16,7 @@ interface FilterOverlayProps {
   onConfirm?: OnFilterConfirmed;
   onDismiss?: () => void;
   progress: Animated.Adaptable<number>;
+  isVisible: boolean;
 }
 
 export type OnFilterConfirmed = (value: {
@@ -32,54 +33,52 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = memo(
     onDismiss,
     defaultSelectedYears = [],
     progress,
+    isVisible,
   }) => {
     const [selectedGenres, setSelectedGenres] = useState(defaultSelectedGenres);
     const [selectedYears, setSelectedYears] = useState(defaultSelectedYears);
 
     const onGenreSelect: onListItemSelect<Genre> = useCallback(
-      ({item, selected}) => {
-        if (selected) setSelectedGenres(prev => [...prev, item]);
-        else setSelectedGenres(prev => [...prev.filter(p => p.id !== item.id)]);
-      },
+      ({item, selected}) =>
+        setSelectedGenres(prev =>
+          selected ? [...prev, item] : [...prev.filter(p => p.id !== item.id)],
+        ),
       [],
     );
 
     const onYearSelect: onListItemSelect<number> = useCallback(
-      ({item, selected}) => {
-        if (selected) setSelectedYears(prev => [...prev, item]);
-        else setSelectedYears(prev => [...prev.filter(p => p !== item)]);
-      },
+      ({item, selected}) =>
+        setSelectedYears(prev =>
+          selected ? [...prev, item] : [...prev.filter(p => p !== item)],
+        ),
       [],
     );
 
-    const years = useMemo(() => {
-      return [...new Set(videos.map(({release_year}) => release_year).sort())];
-    }, [videos]);
-
-    const {opacity, contentOpacity, top, pointerEvents} = useAppearAnimation(
-      progress,
-      {verticalMove: 100},
+    const years = useMemo(
+      () => [...new Set(videos.map(({release_year}) => release_year).sort())],
+      [videos],
     );
 
+    const {opacity, top} = useAppearAnimation(progress, {
+      verticalMove: 20,
+    });
+
     return (
-      <Animated.View
-        pointerEvents={pointerEvents}
-        style={[
-          styles.container,
-          {
-            opacity,
-          },
-        ]}>
-        <BlurView
-          blurType="dark"
-          style={StyleSheet.absoluteFillObject}
-          blurAmount={10}>
+      <SafeAreaView
+        style={styles.container}
+        pointerEvents={isVisible ? 'auto' : 'none'}>
+        <Animated.View
+          style={[
+            styles.contentContainer,
+            {
+              opacity,
+            },
+          ]}>
           <Animated.View
             style={[
               styles.blurContainer,
               {
-                opacity: contentOpacity,
-                top: top,
+                top,
               },
             ]}>
             <Header
@@ -91,7 +90,9 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = memo(
               }
             />
             <Space />
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.scrollContainer}>
               <Text style={typography.sectionTitle}>{dictionary.genres}</Text>
               <Space />
               <GenresWrapList
@@ -109,8 +110,8 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = memo(
               />
             </ScrollView>
           </Animated.View>
-        </BlurView>
-      </Animated.View>
+        </Animated.View>
+      </SafeAreaView>
     );
   },
 );
@@ -118,11 +119,16 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = memo(
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    overflow: 'hidden',
+  },
+  contentContainer: {
+    flex: 1,
   },
   blurContainer: {
     ...StyleSheet.absoluteFillObject,
-    paddingVertical: 40,
     paddingHorizontal: 24,
+    backgroundColor: colors.background.page,
+  },
+  scrollContainer: {
+    paddingBottom: 16,
   },
 });

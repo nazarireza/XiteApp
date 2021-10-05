@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   TouchableOpacityProps,
   Image,
+  View,
 } from 'react-native';
 import {Space} from '.';
 import {typography} from '../../assets';
@@ -18,15 +19,17 @@ export const VideoItem: React.FC<TouchableOpacityProps & VideoItemProps> = memo(
       <TouchableOpacity activeOpacity={0.7} style={styles.container} {...rest}>
         <Image style={styles.thumbnailImage} source={{uri: image_url}} />
         <Space size={8} />
-        <Text numberOfLines={1} adjustsFontSizeToFit style={typography.title}>
-          {title}
-        </Text>
-        <Text
-          numberOfLines={1}
-          adjustsFontSizeToFit
-          style={typography.subtitle}>
-          {artist}
-        </Text>
+        <View style={styles.textsContainer}>
+          <Text numberOfLines={1} adjustsFontSizeToFit style={typography.title}>
+            {title}
+          </Text>
+          <Text
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            style={typography.subtitle}>
+            {artist}
+          </Text>
+        </View>
       </TouchableOpacity>
     );
   },
@@ -36,5 +39,8 @@ const styles = StyleSheet.create({
   container: {},
   thumbnailImage: {
     height: 200,
+  },
+  textsContainer: {
+    paddingHorizontal: 8,
   },
 });

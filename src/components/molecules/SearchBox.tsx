@@ -47,11 +47,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.background.card,
     paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
+    borderRadius: 30,
   },
   input: {
     flex: 1,
     color: colors.text.primary,
+    paddingVertical:12,
   },
 });

@@ -13,8 +13,8 @@ interface VideosListProps {
   onItemSelect?: onListItemSelect<Video>;
 }
 
-const CONTAINER_HORIZONTAL_PADDING = 24,
-  ITEM_HORIZONTAL_PADDING = 16;
+const CONTAINER_HORIZONTAL_PADDING = 4,
+  ITEM_HORIZONTAL_PADDING = 8;
 
 export const VideosList: React.FC<FlatListProps<Video> & VideosListProps> =
   memo(({onItemSelect, ...rest}) => {

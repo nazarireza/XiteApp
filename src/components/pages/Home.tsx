@@ -5,11 +5,12 @@ import {useGetVideosQuery} from '../../services';
 import {colors, dictionary} from '../../assets';
 import {GenresList, Header, SearchBox, VideosList} from '../molecules';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {Space, onListItemSelect} from '../atoms';
+import {Space, onListItemSelect, LoadingContainer} from '../atoms';
 import {FilterOverlay, OnFilterConfirmed, SerachOverlay} from '.';
 import {initialState, reducer, Types} from './filterOverlay/store';
 import {useTimingTransition} from 'react-native-redash';
 import {Easing} from 'react-native-reanimated';
+import {useBackHandler} from './useBackHandler';
 
 export const HomePage: RootStackComponent<Routes.Home> = memo(
   ({navigation}) => {
@@ -60,9 +61,27 @@ export const HomePage: RootStackComponent<Routes.Home> = memo(
       });
     }, []);
 
+    const onOverlayDismiss: () => boolean = () => {
+      searchInputRef.current?.blur();
+      dispatch({
+        type: Types.SET_MULTI,
+        payload: {
+          filterIsVisisble: false,
+          searchIsVisible: false,
+          keyword: '',
+        },
+      });
+      return true;
+    };
+
+    useBackHandler(onOverlayDismiss);
+
     return (
       <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar
+          barStyle="light-content"
+          backgroundColor={colors.background.page}
+        />
         <View style={styles.headerContainer}>
           <Header
             title={dictionary.appName}
@@ -70,13 +89,7 @@ export const HomePage: RootStackComponent<Routes.Home> = memo(
             progress={searchProgress}>
             <Header
               title={dictionary.searchrModalTitle}
-              onBackPress={() => {
-                searchInputRef.current?.blur();
-                dispatch({
-                  type: Types.SET_MULTI,
-                  payload: {searchIsVisible: false, keyword: ''},
-                });
-              }}
+              onBackPress={onOverlayDismiss}
             />
           </Header>
           <Space size={8} />
@@ -92,16 +105,18 @@ export const HomePage: RootStackComponent<Routes.Home> = memo(
           />
           <Space />
         </View>
-        <GenresList
-          data={data?.genres}
-          selectedItems={selectedGenres}
-          onItemSelect={onGenreSelect}
-          onFilterPress={() =>
-            dispatch({type: Types.SET_FILTER_IS_VISIBLE, payload: true})
-          }
-        />
-        <Space size={8} />
-        <VideosList data={data?.videos} />
+        <LoadingContainer isBusy={isLoading}>
+          <GenresList
+            data={data?.genres}
+            selectedItems={selectedGenres}
+            onItemSelect={onGenreSelect}
+            onFilterPress={() =>
+              dispatch({type: Types.SET_FILTER_IS_VISIBLE, payload: true})
+            }
+          />
+          <Space size={8} />
+          <VideosList data={data?.videos} />
+        </LoadingContainer>
         <FilterOverlay
           progress={filterProgress}
           genres={data?.genres}
@@ -112,8 +127,13 @@ export const HomePage: RootStackComponent<Routes.Home> = memo(
           onDismiss={() =>
             dispatch({type: Types.SET_FILTER_IS_VISIBLE, payload: false})
           }
+          isVisible={filterIsVisisble}
         />
-        <SerachOverlay keyword={keyword} progress={searchProgress} />
+        <SerachOverlay
+          keyword={keyword}
+          progress={searchProgress}
+          isVisible={searchIsVisible}
+        />
       </SafeAreaView>
     );
   },
@@ -126,6 +146,5 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     paddingHorizontal: 24,
-    paddingVertical: 16,
   },
 });

@@ -19,7 +19,7 @@ export const Header: React.FC<HeaderProps> = memo(
     title = dictionary.filterModalTitle,
     actionTitle,
     onActionPress,
-    onBackPress,
+    onBackPress = () => true,
     dissmissable = true,
     children,
     progress = new Animated.Value(0),
@@ -74,6 +74,7 @@ export const Header: React.FC<HeaderProps> = memo(
 const styles = StyleSheet.create({
   rootContainer: {
     height: 40,
+    backgroundColor: 'rgba(0,0,0,.01)',
   },
   container: {
     flexDirection: 'row',
