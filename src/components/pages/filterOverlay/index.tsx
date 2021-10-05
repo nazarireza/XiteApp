@@ -1,10 +1,12 @@
 import React, {memo, useState, useCallback, useMemo} from 'react';
-import {StyleSheet, View, Text, ScrollView} from 'react-native';
-import {colors, dictionary, typography} from '../../../assets';
+import {StyleSheet, Text, ScrollView} from 'react-native';
+import {dictionary, typography} from '../../../assets';
 import {BlurView} from '@react-native-community/blur';
 import {GenresWrapList, Header, YearsWrapList} from '../../molecules';
 import {Space, onListItemSelect} from '../../atoms';
 import {Genre, Video} from '../../../types';
+import Animated from 'react-native-reanimated';
+import {useAppearAnimation} from '../useAppearAnimation';
 
 interface FilterOverlayProps {
   genres?: Array<Genre>;
@@ -13,6 +15,7 @@ interface FilterOverlayProps {
   defaultSelectedYears?: Array<number>;
   onConfirm?: OnFilterConfirmed;
   onDismiss?: () => void;
+  progress: Animated.Adaptable<number>;
 }
 
 export type OnFilterConfirmed = (value: {
@@ -28,6 +31,7 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = memo(
     onConfirm,
     onDismiss,
     defaultSelectedYears = [],
+    progress,
   }) => {
     const [selectedGenres, setSelectedGenres] = useState(defaultSelectedGenres);
     const [selectedYears, setSelectedYears] = useState(defaultSelectedYears);
@@ -52,41 +56,71 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = memo(
       return [...new Set(videos.map(({release_year}) => release_year).sort())];
     }, [videos]);
 
+    const {opacity, contentOpacity, top, pointerEvents} = useAppearAnimation(
+      progress,
+      {verticalMove: 100},
+    );
+
     return (
-      <BlurView style={styles.container} blurType="dark" blurAmount={10}>
-        <Header
-          title={dictionary.filterModalTitle}
-          actionTitle={dictionary.filterModalConfirmActionTitle}
-          onBackPress={onDismiss}
-          onActionPress={() =>
-            onConfirm?.({genres: selectedGenres, years: selectedYears})
-          }
-        />
-        <Space />
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <Text style={typography.sectionTitle}>{dictionary.genres}</Text>
-          <Space />
-          <GenresWrapList
-            data={genres}
-            selectedItems={selectedGenres}
-            onItemSelect={onGenreSelect}
-          />
-          <Space size={24} />
-          <Text style={typography.sectionTitle}>{dictionary.years}</Text>
-          <Space />
-          <YearsWrapList
-            data={years}
-            selectedItems={selectedYears}
-            onItemSelect={onYearSelect}
-          />
-        </ScrollView>
-      </BlurView>
+      <Animated.View
+        pointerEvents={pointerEvents}
+        style={[
+          styles.container,
+          {
+            opacity,
+          },
+        ]}>
+        <BlurView
+          blurType="dark"
+          style={StyleSheet.absoluteFillObject}
+          blurAmount={10}>
+          <Animated.View
+            style={[
+              styles.blurContainer,
+              {
+                opacity: contentOpacity,
+                top: top,
+              },
+            ]}>
+            <Header
+              title={dictionary.filterModalTitle}
+              actionTitle={dictionary.filterModalConfirmActionTitle}
+              onBackPress={onDismiss}
+              onActionPress={() =>
+                onConfirm?.({genres: selectedGenres, years: selectedYears})
+              }
+            />
+            <Space />
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <Text style={typography.sectionTitle}>{dictionary.genres}</Text>
+              <Space />
+              <GenresWrapList
+                data={genres}
+                selectedItems={selectedGenres}
+                onItemSelect={onGenreSelect}
+              />
+              <Space size={24} />
+              <Text style={typography.sectionTitle}>{dictionary.years}</Text>
+              <Space />
+              <YearsWrapList
+                data={years}
+                selectedItems={selectedYears}
+                onItemSelect={onYearSelect}
+              />
+            </ScrollView>
+          </Animated.View>
+        </BlurView>
+      </Animated.View>
     );
   },
 );
 
 const styles = StyleSheet.create({
   container: {
+    ...StyleSheet.absoluteFillObject,
+    overflow: 'hidden',
+  },
+  blurContainer: {
     ...StyleSheet.absoluteFillObject,
     paddingVertical: 40,
     paddingHorizontal: 24,

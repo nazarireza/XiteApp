@@ -4,22 +4,24 @@ import {BlurView} from '@react-native-community/blur';
 import {VideosCompactList} from '../molecules';
 import {NormalizedVideo} from '../../types';
 import {useGetVideosQuery} from '../../services';
+import Animated from 'react-native-reanimated';
+import {useAppearAnimation} from './useAppearAnimation';
 
 interface SearchOverlayProps {
   keyword: string;
-  onDismiss?: () => void;
+  progress: Animated.Adaptable<number>;
 }
 
 export const SerachOverlay: React.FC<SearchOverlayProps> = memo(
-  ({keyword, onDismiss}) => {
+  ({keyword, progress}) => {
     const [query, setQuery] = useState(keyword);
 
     const {data: {videos = [], genres = []} = {}} = useGetVideosQuery({});
 
     useEffect(() => {
-        const timeOutId = setTimeout(() => setQuery(keyword), 500);
-        return () => clearTimeout(timeOutId);
-      }, [keyword]);
+      const timeOutId = setTimeout(() => setQuery(keyword), 500);
+      return () => clearTimeout(timeOutId);
+    }, [keyword]);
 
     const normalizedVideos: NormalizedVideo[] = useMemo(() => {
       return videos.map(item => ({
@@ -37,10 +39,27 @@ export const SerachOverlay: React.FC<SearchOverlayProps> = memo(
       );
     }, [normalizedVideos, query]);
 
+    const {opacity, top, pointerEvents} = useAppearAnimation(progress, {
+      verticalMove: 20,
+    });
+
     return (
-      <BlurView style={styles.container} blurType="dark" blurAmount={15}>
-        <VideosCompactList data={searchResult} />
-      </BlurView>
+      <Animated.View style={[styles.container, {opacity}]} {...{pointerEvents}}>
+        <BlurView
+          style={StyleSheet.absoluteFillObject}
+          blurType="dark"
+          blurAmount={15}>
+          <Animated.View
+            style={[
+              styles.blurContainer,
+              {
+                top,
+              },
+            ]}>
+            <VideosCompactList data={searchResult} />
+          </Animated.View>
+        </BlurView>
+      </Animated.View>
     );
   },
 );
@@ -49,6 +68,9 @@ const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
     top: 155,
+  },
+  blurContainer: {
+    ...StyleSheet.absoluteFillObject,
     paddingVertical: 16,
     paddingHorizontal: 24,
   },

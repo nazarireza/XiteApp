@@ -1,5 +1,5 @@
-import React, {memo} from 'react';
-import {StyleSheet, View, TextInput} from 'react-native';
+import React, {forwardRef, memo} from 'react';
+import {StyleSheet, View, TextInput, TextInputProps} from 'react-native';
 import {colors, dictionary} from '../../assets';
 import {IconButton, IconClose, IconSearch, Space} from '../atoms';
 
@@ -9,29 +9,36 @@ interface SearchBoxProps {
   onChange?: (keyword: string) => void;
 }
 
-export const SearchBox: React.FC<SearchBoxProps> = memo(
-  ({placeHolder = dictionary.searchBoxPlaceHolder, onChange, value}) => {
-    const hasValue = !!value;
-    return (
-      <View style={styles.container}>
-        <IconSearch color={colors.text.secondary} />
-        <Space size={8} />
-        <TextInput
-          onChangeText={onChange}
-          value={value}
-          style={styles.input}
-          placeholder={placeHolder}
-          placeholderTextColor={colors.text.secondary}
-          returnKeyType="search"
-        />
-        {hasValue && (
-          <IconButton onPress={() => onChange?.('')}>
-            <IconClose />
-          </IconButton>
-        )}
-      </View>
-    );
-  },
+export const SearchBox = memo(
+  forwardRef<TextInput, TextInputProps & SearchBoxProps>(
+    (
+      {placeHolder = dictionary.searchBoxPlaceHolder, onChange, value, ...rest},
+      ref,
+    ) => {
+      const hasValue = !!value;
+      return (
+        <View style={styles.container}>
+          <IconSearch color={colors.text.secondary} />
+          <Space size={8} />
+          <TextInput
+            ref={ref}
+            onChangeText={onChange}
+            value={value}
+            style={styles.input}
+            placeholder={placeHolder}
+            placeholderTextColor={colors.text.secondary}
+            returnKeyType="search"
+            {...rest}
+          />
+          {hasValue && (
+            <IconButton onPress={() => onChange?.('')}>
+              <IconClose />
+            </IconButton>
+          )}
+        </View>
+      );
+    },
+  ),
 );
 
 const styles = StyleSheet.create({
