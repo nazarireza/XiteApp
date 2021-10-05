@@ -1,4 +1,4 @@
-import React, {memo, useState, useCallback, useMemo} from 'react';
+import React, {memo, useState, useCallback, useMemo, useEffect} from 'react';
 import {StyleSheet, Text, ScrollView, View} from 'react-native';
 import {colors, dictionary, typography} from '../../../assets';
 import {GenresWrapList, Header, YearsWrapList} from '../../molecules';
@@ -37,6 +37,12 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = memo(
   }) => {
     const [selectedGenres, setSelectedGenres] = useState(defaultSelectedGenres);
     const [selectedYears, setSelectedYears] = useState(defaultSelectedYears);
+
+    // "selectedGenres" will be updated when the "defaultSelectedGenres" are updated on the dashboard page
+    useEffect(
+      () => setSelectedGenres(defaultSelectedGenres),
+      [defaultSelectedGenres],
+    );
 
     const onGenreSelect: onListItemSelect<Genre> = useCallback(
       ({item, selected}) =>

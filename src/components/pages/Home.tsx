@@ -1,6 +1,13 @@
-import React, {memo, useCallback, useReducer, useRef} from 'react';
+import React, {
+  memo,
+  useCallback,
+  useReducer,
+  useRef,
+  useState,
+  useEffect,
+} from 'react';
 import {StyleSheet, View, TextInput, StatusBar} from 'react-native';
-import {Genre, RootStackComponent, Routes} from '../../types';
+import {Genre, RootStackComponent, Routes, Video} from '../../types';
 import {useGetVideosQuery} from '../../services';
 import {colors, dictionary} from '../../assets';
 import {GenresList, Header, SearchBox, VideosList} from '../molecules';
@@ -24,6 +31,7 @@ export const HomePage: RootStackComponent<Routes.Home> = memo(
       },
       dispatch,
     ] = useReducer(reducer, initialState);
+    const [filteredData, setFilteredData] = useState<Array<Video>>([]);
     const searchInputRef = useRef<TextInput>(null);
 
     const filterProgress = useTimingTransition(filterIsVisisble, {
@@ -60,6 +68,22 @@ export const HomePage: RootStackComponent<Routes.Home> = memo(
         },
       });
     }, []);
+
+    // FIXME: This is a mock implementation for simulating the server-side logic and should be remove
+    useEffect(() => {
+      const timeOutId = setTimeout(() => {
+        const shouldBeFilter =
+          selectedGenres.length > 0 || selectedYears.length > 0;
+        const result = data?.videos.filter(
+          ({genre_id, release_year}) =>
+            !shouldBeFilter ||
+            selectedGenres.some(genre => genre.id === genre_id) ||
+            selectedYears.some(year => year === release_year),
+        );
+        setFilteredData(result || []);
+      }, 500);
+      return () => clearTimeout(timeOutId);
+    }, [data, selectedGenres, selectedYears]);
 
     const onOverlayDismiss: () => boolean = () => {
       searchInputRef.current?.blur();
@@ -115,7 +139,7 @@ export const HomePage: RootStackComponent<Routes.Home> = memo(
             }
           />
           <Space size={8} />
-          <VideosList data={data?.videos} />
+          <VideosList data={filteredData} />
         </LoadingContainer>
         <FilterOverlay
           progress={filterProgress}

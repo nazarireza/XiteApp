@@ -1,5 +1,5 @@
 import React, {memo, useMemo, useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {VideosCompactList} from '../molecules';
 import {NormalizedVideo} from '../../types';
 import {useGetVideosQuery} from '../../services';
@@ -16,14 +16,11 @@ interface SearchOverlayProps {
 
 export const SerachOverlay: React.FC<SearchOverlayProps> = memo(
   ({keyword, progress, isVisible}) => {
-    const [query, setQuery] = useState(keyword);
+    const [searchResult, setSearchResult] = useState<Array<NormalizedVideo>>(
+      [],
+    );
 
     const {data: {videos = [], genres = []} = {}} = useGetVideosQuery({});
-
-    useEffect(() => {
-      const timeOutId = setTimeout(() => setQuery(keyword), 500);
-      return () => clearTimeout(timeOutId);
-    }, [keyword]);
 
     const normalizedVideos: NormalizedVideo[] = useMemo(
       () =>
@@ -34,15 +31,18 @@ export const SerachOverlay: React.FC<SearchOverlayProps> = memo(
       [videos],
     );
 
-    const searchResult: NormalizedVideo[] = useMemo(
-      () =>
-        normalizedVideos.filter(item => {
+    // FIXME: This is a mock implementation for simulating the server-side logic and should be remove
+    useEffect(() => {
+      const timeOutId = setTimeout(() => {
+        const result = normalizedVideos.filter(item => {
           return `${item.artist}${item.title}${item.genre?.name}`
             .toLowerCase()
-            .includes(query.toLowerCase());
-        }),
-      [normalizedVideos, query],
-    );
+            .includes(keyword.toLowerCase());
+        });
+        setSearchResult(result);
+      }, 500);
+      return () => clearTimeout(timeOutId);
+    }, [normalizedVideos, keyword]);
 
     const {opacity, top} = useAppearAnimation(progress, {
       verticalMove: 20,
@@ -52,8 +52,7 @@ export const SerachOverlay: React.FC<SearchOverlayProps> = memo(
       <SafeAreaView
         style={styles.container}
         pointerEvents={isVisible ? 'auto' : 'none'}>
-        <Animated.View
-          style={[styles.contentContainer, {opacity}]}>
+        <Animated.View style={[styles.contentContainer, {opacity}]}>
           <Animated.View
             style={[
               styles.blurContainer,
