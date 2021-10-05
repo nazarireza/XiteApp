@@ -7,8 +7,8 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
-import {onListItemSelect, Video} from '../../types';
-import {Space, VideoItem} from '../atoms';
+import {Video} from '../../types';
+import {Space, VideoItem, onListItemSelect} from '../atoms';
 
 interface VideosListProps {
   onItemSelect?: onListItemSelect<Video>;

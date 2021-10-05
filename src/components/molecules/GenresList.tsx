@@ -8,8 +8,8 @@ import {
   TouchableOpacityProps,
 } from 'react-native';
 import {colors} from '../../assets';
-import {Genre, onListItemSelect} from '../../types';
-import {IconButton, IconFilter, Space, GenreItem} from '../atoms';
+import {Genre} from '../../types';
+import {IconButton, IconFilter, Space, GenreItem, onListItemSelect} from '../atoms';
 
 interface GenresListProps {
   onFilterPress?: () => void;

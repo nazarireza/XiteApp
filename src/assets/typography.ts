@@ -16,8 +16,9 @@ export const typography = StyleSheet.create({
   },
   headerAction: {
     fontFamily,
-    fontSize: 20,
+    fontSize: 17,
     color: colors.text.primary,
+    textDecorationLine: 'underline',
   },
   sectionTitle: {
     fontFamily,

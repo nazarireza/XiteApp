@@ -1,7 +1,11 @@
 import React, {memo} from 'react';
 import Svg, {Path} from 'react-native-svg';
 import {colors} from '../../assets';
-import {IconBaseProps} from '../../types/components';
+
+export type IconBaseProps = {
+  color?: string;
+  size?: number;
+};
 
 export const IconSearch: React.FC<IconBaseProps> = memo(
   ({color = colors.text.primary, size = 24}) => {
