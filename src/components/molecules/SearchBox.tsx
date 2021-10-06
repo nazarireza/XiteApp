@@ -21,6 +21,7 @@ export const SearchBox = memo(
           <IconSearch color={colors.text.secondary} />
           <Space size={8} />
           <TextInput
+            testID="input"
             ref={ref}
             onChangeText={onChange}
             value={value}
@@ -52,6 +53,6 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     color: colors.text.primary,
-    paddingVertical:12,
+    paddingVertical: 12,
   },
 });

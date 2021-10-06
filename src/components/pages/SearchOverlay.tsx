@@ -60,7 +60,7 @@ export const SerachOverlay: React.FC<SearchOverlayProps> = memo(
                 top,
               },
             ]}>
-            <VideosCompactList data={searchResult} />
+            <VideosCompactList data={searchResult} renderItem={null} />
           </Animated.View>
         </Animated.View>
       </SafeAreaView>

@@ -102,6 +102,8 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = memo(
               <Text style={typography.sectionTitle}>{dictionary.genres}</Text>
               <Space />
               <GenresWrapList
+                renderItem={null}
+                keyExtractor={({id}) => `${id}`}
                 data={genres}
                 selectedItems={selectedGenres}
                 onItemSelect={onGenreSelect}
@@ -110,6 +112,8 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = memo(
               <Text style={typography.sectionTitle}>{dictionary.years}</Text>
               <Space />
               <YearsWrapList
+                renderItem={null}
+                keyExtractor={year => `${year}`}
                 data={years}
                 selectedItems={selectedYears}
                 onItemSelect={onYearSelect}

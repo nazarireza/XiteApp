@@ -131,6 +131,7 @@ export const HomePage: RootStackComponent<Routes.Home> = memo(
         </View>
         <LoadingContainer isBusy={isLoading}>
           <GenresList
+            renderItem={null}
             data={data?.genres}
             selectedItems={selectedGenres}
             onItemSelect={onGenreSelect}
@@ -139,7 +140,7 @@ export const HomePage: RootStackComponent<Routes.Home> = memo(
             }
           />
           <Space size={8} />
-          <VideosList data={filteredData} />
+          <VideosList data={filteredData} renderItem={null} />
         </LoadingContainer>
         <FilterOverlay
           progress={filterProgress}

@@ -1,5 +1,5 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
-import type {GetVideosViewModel} from '../types/models';
+import {GetVideosViewModel} from '../types/models';
 
 export const videoApi = createApi({
   reducerPath: 'videoApi',

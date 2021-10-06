@@ -6,14 +6,14 @@ import {
   TouchableOpacityProps,
 } from 'react-native';
 import {colors, typography} from '../../assets';
-import {Genre} from '../../types';
 
-interface GenreItemProps extends Genre {
+interface GenreItemProps {
+  name: string;
   selected?: boolean;
 }
 
 export const GenreItem: React.FC<TouchableOpacityProps & GenreItemProps> = memo(
-  ({id, name, selected, style, ...rest}) => {
+  ({name, selected, style, ...rest}) => {
     return (
       <TouchableOpacity
         activeOpacity={0.7}

@@ -9,7 +9,13 @@ import {
 } from 'react-native';
 import {colors} from '../../assets';
 import {Genre} from '../../types';
-import {IconButton, IconFilter, Space, GenreItem, onListItemSelect} from '../atoms';
+import {
+  IconButton,
+  IconFilter,
+  Space,
+  GenreItem,
+  onListItemSelect,
+} from '../atoms';
 
 interface GenresListProps {
   onFilterPress?: () => void;

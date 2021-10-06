@@ -12,7 +12,7 @@ export interface WrapListProps<T> {
   selectedItems?: Array<T>;
   onItemSelect?: onListItemSelect<T>;
   keyExtractor: (item: T) => string;
-  renderItem: WrapListRenderItem<T>;
+  renderItem: WrapListRenderItem<T> | null | undefined;
 }
 
 export type WrapListRenderItem<T> = (item: {
